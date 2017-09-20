@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Synthesis Fundamentals</title>
+    <script src="js/NexusUI.js"></script>
+    <script src="js/Tone.js"></script>
+    <script src="js/AudioKeys.js"></script>
+    <script src="js/synth.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div class="synth">
+        <section class="osc">
+            <h1>Oscillator</h1>
+            <div class="control">
+                <div id="osc-type-select" class="select"></div>
+            </div>
+            <div class="control">
+                <h2>Detune</h2>
+                <div id="osc-detune-dial" class="dial"></div>
+            </div>
+            <div class="control">
+                <h2>Portamento</h2>
+                <div id="osc-portamento-dial" class="dial"></div>
+            </div>
+        </section>
+
+        <section class="filter">
+            <h1>Filter</h1>
+            <div class="control">
+                <div id="filter-type-select"></div>
+            </div>
+            <div class="control">
+                <h2>Frequency</h2>
+                <div id="filter-freq-dial" class="dial"></div>
+            </div>
+            <div class="control">
+                <h2>Resonance</h2>
+                <div id="filter-res-dial" class="dial"></div>
+            </div>
+        </section>
+
+        <section class="envelope">
+            <h1>Envelope</h1>
+            <div class="vcontrol">
+                <h2>Attack</h2>
+                <div id="envelope-a-slider" class="slider"></div>
+            </div>
+            <div class="vcontrol">
+                <h2>Decay</h2>
+                <div id="envelope-d-slider" class="slider"></div>
+            </div>
+            <div class="vcontrol">
+                <h2>Sustain</h2>
+                <div id="envelope-s-slider" class="slider"></div>
+            </div>
+            <div class="vcontrol">
+                <h2>Release</h2>
+                <div id="envelope-r-slider" class="slider"></div>
+            </div>
+        </section>
+
+        <section class="lfo">
+            <h1>LFO</h1>
+            <div class="control">
+                <div id="lfo-type-select" class="select"></div>
+            </div>
+            <div class="control">
+                <h2>Rate</h2>
+                <div id="lfo-rate-dial" class="dial"></div>
+            </div>
+        </section>
+
+        <section class="routing">
+            <h1>Routing</h1>
+            <div class="vcontrol">
+                <div class="control">
+                    <h2>Env → Osc Pitch</h2>
+                    <div id="env-osc-dial" class="dial"></div>
+                </div>
+                <div class="control">
+                    <h2>LFO → Osc Pitch</h2>
+                    <div id="lfo-osc-dial" class="dial"></div>
+                </div>
+            </div>
+            <div class="vcontrol">
+                <div class="control">
+                    <h2>Env → Filter Freq</h2>
+                    <div id="env-filter-dial" class="dial"></div>
+                </div>
+                <div class="control">
+                    <h2>LFO → Filter Freq</h2>
+                    <div id="lfo-filter-dial" class="dial"></div>
+                </div>
+            </div>
+            <div class="vcontrol">
+                <div class="control">
+                    <h2>Env → Amp Vol</h2>
+                    <div id="env-amp-dial" class="dial"></div>
+                </div>
+                <div class="control">
+                    <h2>LFO → Amp Vol</h2>
+                    <div id="lfo-amp-dial" class="dial"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="keyboard"></div>
+</body>
+</html>

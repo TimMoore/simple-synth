@@ -1,0 +1,38 @@
+body {
+    font-family: "Futura";
+}
+
+.synth h1, .synth h2 {
+    font-weight: normal;
+}
+
+.synth h1 {
+    font-size: 18px;
+}
+.synth h2 {
+    font-size: 12px;
+}
+
+.synth section {
+    vertical-align: top;
+}
+
+.synth section, .synth .dial {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.synth .control {
+    border-bottom: 1px solid;
+    padding: 1em;
+}
+
+.synth .vcontrol {
+    display: inline-block;
+}
+
+#keyboard {
+    margin: 1em;
+}
