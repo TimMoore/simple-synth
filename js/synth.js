@@ -3,20 +3,32 @@ function FundamentalSynth() {
 
     function Synth() {
         Tone.Monophonic.call(this, {});
+
+        // Oscillators
         this.osc = new Tone.Oscillator().start();
         this.oscHi = new Tone.Oscillator().start();
         this.oscLo = new Tone.Oscillator().start();
         this.detune = this.oscHi.detune.chain(new Tone.Negate(), this.oscLo.detune);
+        this.osc.frequency.fan(this.oscHi.frequency, this.oscLo.frequency);
+        this.oscVibrato = new Tone.Delay();
+        this.oscVibratoAmount = new Tone.Multiply(0.005).connect(this.oscVibrato.delayTime);
 
+        // Osc --> Frequency Modulation
+        this.osc.connect(this.oscVibrato);
+        this.oscLo.connect(this.oscVibrato);
+        this.oscHi.connect(this.oscVibrato);
+
+        // Filter
         this.filter = new Tone.Filter();
         this.filterFrequency = new Tone.Signal();
-        this.filterFrequencyScaled = new Tone.ScaleExp(20, 20000);
-        // this.filterFrequencyOutput = new Tone.Signal();
-        this.filterFrequency.chain(this.filterFrequencyScaled, this.filter.frequency);
-        this.filterResonance = new Tone.Signal();
-        this.filterResonanceScaled = new Tone.ScaleExp(0, 100);
-        this.filterResonance.chain(this.filterResonanceScaled, this.filter.Q);
+        this.filterFrequency.chain(new Tone.ScaleExp(20, 20000), this.filter.frequency);
+        this.filterQ = new Tone.Signal();
+        this.filterQ.chain(new Tone.Multiply(100), this.filter.Q);
 
+        // Frequency Mod --> Filter
+        this.oscVibrato.connect(this.filter);
+
+        // Envelope
         this.envelope = new Tone.AmplitudeEnvelope({
             attack: 0.01,
             decay: 0,
@@ -24,15 +36,28 @@ function FundamentalSynth() {
             release: 0.01
         });
 
-        this.lfo = new Tone.LFO();
-
-        // Route
-        this.osc.frequency.fan(this.oscHi.frequency, this.oscLo.frequency);
-        this.osc.connect(this.filter);
-        this.oscLo.connect(this.filter);
-        this.oscHi.connect(this.filter);
+        // Filter --> Env
         this.filter.connect(this.envelope);
-        this.envelope.connect(this.output);
+
+        // Amplifier
+        this.amplifier = new Tone.Gain();
+        this.tremoloAmount = new Tone.AudioToGain().chain(new Tone.Add(-1), this.amplifier.gain);
+        this.envelope.connect(this.amplifier);
+        this.amplifier.connect(this.output);
+
+        // LFO
+        this.lfo = new Tone.LFO().start();
+        this.lfoRate = new Tone.Signal();
+        this.lfoRate.chain(new Tone.ScaleExp(0.1, 10), this.lfo.frequency);
+
+        // LFO Routing
+        this.lfoOsc = new Tone.Multiply(0);
+        this.lfoFilter = new Tone.Multiply(0);
+        this.lfoAmplitude = new Tone.Multiply(0);
+        this.lfo.fan(this.lfoOsc, this.lfoFilter, this.lfoAmplitude);
+        this.lfoOsc.connect(this.oscVibratoAmount);
+        this.lfoFilter.connect(this.filterFrequency);
+        this.lfoAmplitude.connect(this.tremoloAmount);
 
         // Member required by the Monophonic superclass
         this.frequency = this.osc.frequency;
@@ -132,17 +157,17 @@ function FundamentalSynth() {
     initDialControl('filter-freq', synth.filterFrequency, 'value', {
         value: 0.5
     });
-    initDialControl('filter-res', synth.filterResonance);
+    initDialControl('filter-res', synth.filterQ);
 
     initWaveformSelect('lfo-type', synth.lfo)
-    initDialControl('lfo-rate', synth.lfo.frequency);
+    initDialControl('lfo-rate', synth.lfoRate);
 
     initDialControl('env-osc');
-    initDialControl('lfo-osc');
+    initDialControl('lfo-osc', synth.lfoOsc);
     initDialControl('env-filter');
-    initDialControl('lfo-filter');
+    initDialControl('lfo-filter', synth.lfoFilter);
     initDialControl('env-amp');
-    initDialControl('lfo-amp');
+    initDialControl('lfo-amp', synth.lfoAmplitude);
 
     return synth;
 }
