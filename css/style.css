@@ -17,7 +17,7 @@ body {
     vertical-align: top;
 }
 
-.synth section, .synth .dial {
+.synth section, .synth .dial, .synth .slider {
     display: inline-block;
     margin-left: auto;
     margin-right: auto;

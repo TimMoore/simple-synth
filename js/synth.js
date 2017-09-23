@@ -10,40 +10,36 @@ function FundamentalSynth() {
         this.oscLo = new Tone.Oscillator().start();
         this.detune = this.oscHi.detune.chain(new Tone.Negate(), this.oscLo.detune);
         this.osc.frequency.fan(this.oscHi.frequency, this.oscLo.frequency);
-        this.oscVibrato = new Tone.Delay();
-        this.oscVibratoAmount = new Tone.Multiply(0.005).connect(this.oscVibrato.delayTime);
 
-        // Osc --> Frequency Modulation
-        this.osc.connect(this.oscVibrato);
-        this.oscLo.connect(this.oscVibrato);
-        this.oscHi.connect(this.oscVibrato);
+        // Oscillators --> Pitch Modulation
+        this.pitchMod = new Tone.Delay();
+        this.pitchModAmount = new Tone.Multiply(0.005).connect(this.pitchMod.delayTime);
+        this.osc.connect(this.pitchMod);
+        this.oscLo.connect(this.pitchMod);
+        this.oscHi.connect(this.pitchMod);
 
-        // Filter
+        // Pitch Modulation --> Filter
         this.filter = new Tone.Filter();
         this.filterFrequency = new Tone.Signal();
         this.filterFrequency.chain(new Tone.ScaleExp(20, 20000), this.filter.frequency);
         this.filterQ = new Tone.Signal();
         this.filterQ.chain(new Tone.Multiply(100), this.filter.Q);
+        this.pitchMod.connect(this.filter);
 
-        // Frequency Mod --> Filter
-        this.oscVibrato.connect(this.filter);
+        // Filter --> Amplifier
+        this.amplifier = new Tone.Gain();
+        this.tremoloAmount = new Tone.AudioToGain();
+        this.filter.connect(this.amplifier);
+
+        // Amplifier --> Output
+        this.amplifier.connect(this.output);
 
         // Envelope
-        this.envelope = new Tone.AmplitudeEnvelope({
-            attack: 0.01,
-            decay: 0,
-            sustain: 1.0,
-            release: 0.01
-        });
+        this.envelope = new Tone.Envelope();
 
-        // Filter --> Env
-        this.filter.connect(this.envelope);
-
-        // Amplifier
-        this.amplifier = new Tone.Gain();
-        this.tremoloAmount = new Tone.AudioToGain().chain(new Tone.Add(-1), this.amplifier.gain);
-        this.envelope.connect(this.amplifier);
-        this.amplifier.connect(this.output);
+        // Envelope Routing
+        this.envAmp = new Tone.Multiply(1);
+        this.envelope.connect(this.amplifier.gain);
 
         // LFO
         this.lfo = new Tone.LFO().start();
@@ -53,11 +49,12 @@ function FundamentalSynth() {
         // LFO Routing
         this.lfoOsc = new Tone.Multiply(0);
         this.lfoFilter = new Tone.Multiply(0);
-        this.lfoAmplitude = new Tone.Multiply(0);
-        this.lfo.fan(this.lfoOsc, this.lfoFilter, this.lfoAmplitude);
-        this.lfoOsc.connect(this.oscVibratoAmount);
+        this.lfoAmp = new Tone.Multiply(0);
+        this.lfo.fan(this.lfoOsc, this.lfoFilter, this.lfoAmp);
+
+        this.lfoOsc.connect(this.pitchModAmount);
         this.lfoFilter.connect(this.filterFrequency);
-        this.lfoAmplitude.connect(this.tremoloAmount);
+        this.lfoAmp.connect(this.tremoloAmount);
 
         // Member required by the Monophonic superclass
         this.frequency = this.osc.frequency;
@@ -134,6 +131,20 @@ function FundamentalSynth() {
         });
     }
 
+    function initSliderControl(id, signal, property, options) {
+        property = property || 'value';
+        options.size = [20, 120];
+
+        // Initialize slider and connect to signal
+        var slider = new Nexus.Slider('#' + id + '-slider', options);
+        slider.on('change', function(value) {
+            signal[property] = value;
+        });
+
+        var initialValue = slider.value;
+        if (signal) signal[property] = initialValue;
+    }
+
     // Osc controls
     initWaveformSelect('osc-type', synth.osc);
     initDialControl('osc-detune', synth.detune, 'value', {
@@ -159,6 +170,19 @@ function FundamentalSynth() {
     });
     initDialControl('filter-res', synth.filterQ);
 
+    initSliderControl('envelope-a', synth.envelope, 'attack', {
+        min: 0.01
+    });
+    initSliderControl('envelope-d', synth.envelope, 'decay', {
+        min: 0.01
+    });
+    initSliderControl('envelope-s', synth.envelope, 'sustain', {
+        value: 1.0
+    });
+    initSliderControl('envelope-r', synth.envelope, 'release', {
+        min: 0.01
+    });
+
     initWaveformSelect('lfo-type', synth.lfo)
     initDialControl('lfo-rate', synth.lfoRate);
 
@@ -167,7 +191,7 @@ function FundamentalSynth() {
     initDialControl('env-filter');
     initDialControl('lfo-filter', synth.lfoFilter);
     initDialControl('env-amp');
-    initDialControl('lfo-amp', synth.lfoAmplitude);
+    initDialControl('lfo-amp', synth.lfoAmp);
 
     return synth;
 }
