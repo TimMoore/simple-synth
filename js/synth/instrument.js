@@ -4,14 +4,6 @@
     Synth.Instrument = function() {
         Tone.Monophonic.call(this, {});
 
-        var osc = oscSection();
-        var flt = filterSection(osc.output);
-        var amp = amplifierSection(flt.output);
-        var lfo = lfoSection(osc.pitchModAmount, flt.frequency);
-
-        // Member required by the Monophonic superclass for pitch control
-        this.frequency = osc.frequency;
-
         // UI Inputs:
         // - osc.type(newType)
         // - osc.detune.value
@@ -28,12 +20,15 @@
         // - lfo.pitchAmount.value
         // - lfo.filterAmount.value
 
-        this.osc = osc;
-        this.filter = flt;
-        this.amplifier = amp;
-        this.output = amp.output;
+        this.osc = oscSection();
+        this.filter = filterSection(this.osc.output);
+        this.amplifier = amplifierSection(this.filter.output);
+        this.output = this.amplifier.output;
 
-        this.lfo = lfo;
+        this.lfo = lfoSection(this.osc.pitchModAmount, this.filter.frequency);
+
+        // Member required by the Monophonic superclass for pitch control
+        this.frequency = this.osc.frequency;
 
         this._readOnly([
             'osc',
