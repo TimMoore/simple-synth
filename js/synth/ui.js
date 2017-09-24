@@ -1,6 +1,17 @@
 Synth.UI = function(synth) {
     "use strict";
 
+    function TypeSelect(id, property, options) {
+        var typeSelect = new Nexus.Select('#' + id + '-select', {
+            options: options
+        });
+        typeSelect.on('change', function(selection) {
+            property.type(selection.value);
+            // Don't take over keyboard focus
+            typeSelect.element.blur();
+        });
+    }
+
     function DialControl(id, signal, property, options) {
         property = property || 'value';
         options = options || {};
@@ -35,34 +46,24 @@ Synth.UI = function(synth) {
     }
 
     // oscillator controls
-    var typeSelect = new Nexus.Select('#osc-type-select', {
-        options: [
+    TypeSelect('osc-type', synth.oscillator, [
         'sine',
         'triangle',
         'sawtooth',
         'square'
-        ]
-    });
-    typeSelect.on('change', function(selection) {
-        synth.oscillator.type(selection.value);
-    });
+        ]);
     DialControl('osc-detune', synth.oscillator.detune, 'value', {
         max: 100
     });
     DialControl('osc-portamento', synth, 'portamento');
 
     // Filter controls
-    var filterTypeSelect = new Nexus.Select('#filter-type-select', {
-        options: [
+    TypeSelect('filter-type', synth.filter, [
         'lowpass',
         'highpass',
         'bandpass',
         'notch'
-        ]
-    });
-    filterTypeSelect.on('change', function(selection) {
-        synth.filter.type(selection.value);
-    });
+        ]);
     DialControl('filter-freq', synth.filter.frequency, 'value', {
         value: 0.5
     });
@@ -83,18 +84,12 @@ Synth.UI = function(synth) {
     });
 
     // LFO controls
-    var lfoTypeSelect = new Nexus.Select('#lfo-type-select', {
-        options: [
+    TypeSelect('lfo-type', synth.lfo, [
         'sine',
         'triangle',
         'sawtooth',
         'square'
-        ]
-    });
-    lfoTypeSelect.on('change', function(selection) {
-        synth.lfo.type(selection.value);
-    });
-
+        ]);
     DialControl('lfo-rate', synth.lfo.rate);
     DialControl('lfo-pitch', synth.lfo.pitchAmount);
     DialControl('lfo-filter', synth.lfo.filterAmount);
