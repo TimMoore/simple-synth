@@ -5,6 +5,10 @@ body {
     text-align: center;
 }
 
+a, a:active, a:hover, a:focus, a:visited {
+    color: #333;
+}
+
 .synth h1, .synth h2 {
     font-weight: normal;
 }
