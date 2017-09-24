@@ -65,7 +65,7 @@
         // Frequency control and pitch modulation affect all three oscillators
         var frequency = new Tone.Signal();
         var pitchMod = new Tone.Multiply();
-        var pitchModAmount = new Tone.ScaleExp(0.5, 2);
+        var pitchModAmount = new Tone.Signal();
         frequency.connect(pitchMod.input[0]);
         pitchModAmount.connect(pitchMod.input[1]);
         frequency.connect(oscMid.frequency);
