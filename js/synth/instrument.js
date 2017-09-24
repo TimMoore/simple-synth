@@ -13,9 +13,7 @@
         this.frequency = osc.frequency;
 
         // UI Inputs:
-        // - osc.mid.type
-        // - osc.hi.type
-        // - osc.lo.type
+        // - osc.type(newType)
         // - osc.detune.value
         // - portamento
         // - filter.type
@@ -25,7 +23,7 @@
         // - envelope.decay
         // - envelope.sustain
         // - envelope.release
-        // - lfo.osc.type
+        // - lfo.type(newType)
         // - lfo.rate.value
         // - lfo.pitchAmount.value
         // - lfo.filterAmount.value
@@ -76,9 +74,11 @@
         hi.connect(output);
 
         return {
-            mid: mid,
-            hi: hi,
-            lo: lo,
+            type: function(newType) {
+                mid.type = newType;
+                hi.type = newType;
+                lo.type = newType;
+            },
             frequency: frequency,
             detune: detune,
             pitchModAmount: pitchModAmount,
@@ -135,7 +135,7 @@
         filterAmount.connect(filterMod);
 
         return {
-            osc: osc,
+            type: function(newType) { osc.type = newType; },
             rate: rate,
             pitchAmount: pitchAmount,
             filterAmount: filterAmount

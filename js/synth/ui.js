@@ -44,9 +44,7 @@ Synth.UI = function(synth) {
         ]
     });
     typeSelect.on('change', function(selection) {
-        synth.osc.mid.type = selection.value;
-        synth.osc.hi.type = selection.value;
-        synth.osc.lo.type = selection.value;
+        synth.osc.type(selection.value);
     });
     DialControl('osc-detune', synth.osc.detune, 'value', {
         max: 100
@@ -93,7 +91,7 @@ Synth.UI = function(synth) {
         ]
     });
     lfoTypeSelect.on('change', function(selection) {
-        synth.lfo.osc.type = selection.value;
+        synth.lfo.type(selection.value);
     });
 
     DialControl('lfo-rate', synth.lfo.rate);
