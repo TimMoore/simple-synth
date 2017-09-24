@@ -83,6 +83,7 @@ Synth.UI = function(synth) {
         min: 0.01
     });
 
+    // LFO controls
     var lfoTypeSelect = new Nexus.Select('#lfo-type-select', {
         options: [
         'sine',
@@ -92,12 +93,12 @@ Synth.UI = function(synth) {
         ]
     });
     lfoTypeSelect.on('change', function(selection) {
-        synth.lfo.type = selection.value;
+        synth.lfo.osc.type = selection.value;
     });
 
-    DialControl('lfo-rate', synth.lfoRate);
-    DialControl('lfo-osc', synth.lfoPitch);
-    DialControl('lfo-filter', synth.lfoFilter);
+    DialControl('lfo-rate', synth.lfo.rate);
+    DialControl('lfo-pitch', synth.lfo.pitchAmount);
+    DialControl('lfo-filter', synth.lfo.filterAmount);
 
     var keyboard = new Nexus.Piano('#keyboard', {
         lowNote: 36,

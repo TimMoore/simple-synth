@@ -7,7 +7,7 @@
         var osc = oscSection();
         var flt = filterSection(osc.output);
         var env = envelopeSection(flt.output);
-        var lfo = lfoSection(osc, flt);
+        var lfo = lfoSection(osc.pitchModAmount, flt.frequency);
 
         // Member required by the Monophonic superclass for pitch control
         this.frequency = osc.frequency;
@@ -42,10 +42,7 @@
         this.envelope = env.envelope;
         this.output = env.output;
 
-        this.lfo = lfo.lfo;
-        this.lfoRate = lfo.lfoRate;
-        this.lfoPitch = lfo.lfoPitch;
-        this.lfoFilter = lfo.lfoFilter;
+        this.lfo = lfo;
 
         this._readOnly([
             'oscMid',
@@ -56,10 +53,7 @@
             'filterFrequency',
             'filterQ',
             'envelope',
-            'lfo',
-            'lfoRate',
-            'lfoPitch',
-            'lfoFilter'
+            'lfo'
             ]);
     }
 
@@ -133,24 +127,24 @@
         };
     }
 
-    function lfoSection(osc, flt) {
-        var lfo = new Tone.LFO().start();
-        var lfoRate = new Tone.Signal();
-        lfoRate.chain(new Tone.ScaleExp(0.1, 10), lfo.frequency);
+    function lfoSection(pitchMod, filterMod) {
+        var osc = new Tone.LFO().start();
+        var rate = new Tone.Signal();
+        rate.chain(new Tone.ScaleExp(0.1, 10), osc.frequency);
 
         // LFO Routing
-        var lfoPitch = new Tone.Multiply(0);
-        var lfoFilter = new Tone.Multiply(0);
-        lfo.fan(lfoPitch, lfoFilter);
+        var pitchAmount = new Tone.Multiply(0);
+        var filterAmount = new Tone.Multiply(0);
+        osc.fan(pitchAmount, filterAmount);
 
-        lfoPitch.connect(osc.pitchModAmount);
-        lfoFilter.connect(flt.frequency);
+        pitchAmount.connect(pitchMod);
+        filterAmount.connect(filterMod);
 
         return {
-            lfo: lfo,
-            lfoRate: lfoRate,
-            lfoPitch: lfoPitch,
-            lfoFilter: lfoFilter
+            osc: osc,
+            rate: rate,
+            pitchAmount: pitchAmount,
+            filterAmount: filterAmount
         };
     }
 
