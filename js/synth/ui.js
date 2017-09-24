@@ -100,11 +100,12 @@ Synth.UI = function(synth) {
     DialControl('lfo-pitch', synth.lfo.pitchAmount);
     DialControl('lfo-filter', synth.lfo.filterAmount);
 
-    var keyboard = new Nexus.Piano('#keyboard', {
+    // On-screen piano control
+    var piano = new Nexus.Piano('#piano', {
         lowNote: 36,
         highNote: 73
     });
-    keyboard.on('change', function(key) {
+    piano.on('change', function(key) {
         if (key.state) {
             synth.triggerAttack(Tone.Frequency(key.note, "midi"));
         } else {
@@ -114,11 +115,9 @@ Synth.UI = function(synth) {
 
     // Easter egg: computer keyboard control
     var keyboard = new AudioKeys();
-
     keyboard.down(function(note) {
       synth.triggerAttack(note.frequency);
     });
-
     keyboard.up(function(note) {
       synth.triggerRelease();
     });
