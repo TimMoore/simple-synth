@@ -68,27 +68,33 @@
         var oscHi = new Tone.Oscillator().start();
         var oscLo = new Tone.Oscillator().start();
 
-        // Frequency control affects all three oscillators
+        // Frequency control and pitch modulation affect all three oscillators
+        var frequency = new Tone.Signal();
+        var pitchMod = new Tone.Multiply();
+        var pitchModAmount = new Tone.ScaleExp(0.5, 2);
+        frequency.connect(pitchMod.input[0]);
+        pitchModAmount.connect(pitchMod.input[1]);
+        frequency.connect(oscMid.frequency);
+        pitchMod.connect(oscMid.frequency);
         oscMid.frequency.fan(oscHi.frequency, oscLo.frequency);
 
         // Detune control moves the hi and lo oscillators in opposite directions
-        oscHi.detune.chain(new Tone.Negate(), oscLo.detune)
+        var detune = oscHi.detune;
+        detune.chain(new Tone.Negate(), oscLo.detune);
 
-        // Oscillators --> Pitch Modulation
-        var pitchMod = new Tone.Delay();
-        var pitchModAmount = new Tone.Multiply(0.005).connect(pitchMod.delayTime);
-        oscMid.connect(pitchMod);
-        oscLo.connect(pitchMod);
-        oscHi.connect(pitchMod);
+        var output = new Tone.Signal();
+        oscMid.connect(output)
+        oscLo.connect(output);
+        oscHi.connect(output);
 
         return {
             oscMid: oscMid,
             oscHi: oscHi,
             oscLo: oscLo,
-            frequency: oscMid.frequency,
-            detune: oscHi.detune,
+            frequency: frequency,
+            detune: detune,
             pitchModAmount: pitchModAmount,
-            output: pitchMod.output
+            output: output
         };
     }
 
