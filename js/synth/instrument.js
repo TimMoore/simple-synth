@@ -6,7 +6,7 @@
 
         var osc = oscSection();
         var flt = filterSection(osc.output);
-        var env = envelopeSection(flt.output);
+        var amp = amplifierSection(flt.output);
         var lfo = lfoSection(osc.pitchModAmount, flt.frequency);
 
         // Member required by the Monophonic superclass for pitch control
@@ -19,28 +19,26 @@
         // - filter.type(newType)
         // - filter.frequency.value
         // - filter.Q.value
-        // - envelope.attack
-        // - envelope.decay
-        // - envelope.sustain
-        // - envelope.release
+        // - amp.envelope.attack
+        // - amp.envelope.decay
+        // - amp.envelope.sustain
+        // - amp.envelope.release
         // - lfo.type(newType)
         // - lfo.rate.value
         // - lfo.pitchAmount.value
         // - lfo.filterAmount.value
 
         this.osc = osc;
-
         this.filter = flt;
-
-        this.envelope = env.envelope;
-        this.output = env.output;
+        this.amplifier = amp;
+        this.output = amp.output;
 
         this.lfo = lfo;
 
         this._readOnly([
             'osc',
             'filter',
-            'envelope',
+            'amplifier',
             'lfo'
             ]);
     }
@@ -106,7 +104,7 @@
         }
     }
 
-    function envelopeSection(input) {
+    function amplifierSection(input) {
         var envelope = new Tone.AmplitudeEnvelope();
 
         input.connect(envelope);
@@ -141,11 +139,11 @@
     Tone.extend(Synth.Instrument, Tone.Monophonic);
 
     Synth.Instrument.prototype._triggerEnvelopeAttack = function(time, velocity){
-        this.envelope.triggerAttack(time, velocity);
+        this.amplifier.envelope.triggerAttack(time, velocity);
         return this;
     };
     Synth.Instrument.prototype._triggerEnvelopeRelease = function(time){
-        this.envelope.triggerRelease(time);
+        this.amplifier.envelope.triggerRelease(time);
         return this;
     };
 })();

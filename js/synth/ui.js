@@ -68,16 +68,17 @@ Synth.UI = function(synth) {
     });
     DialControl('filter-q', synth.filter.Q);
 
-    SliderControl('envelope-a', synth.envelope, 'attack', {
+    // Amplifier/Envelope controls
+    SliderControl('envelope-a', synth.amplifier.envelope, 'attack', {
         min: 0.01
     });
-    SliderControl('envelope-d', synth.envelope, 'decay', {
+    SliderControl('envelope-d', synth.amplifier.envelope, 'decay', {
         min: 0.01
     });
-    SliderControl('envelope-s', synth.envelope, 'sustain', {
+    SliderControl('envelope-s', synth.amplifier.envelope, 'sustain', {
         value: 1.0
     });
-    SliderControl('envelope-r', synth.envelope, 'release', {
+    SliderControl('envelope-r', synth.amplifier.envelope, 'release', {
         min: 0.01
     });
 
