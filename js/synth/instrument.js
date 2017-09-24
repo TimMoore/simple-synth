@@ -13,10 +13,10 @@
         this.frequency = osc.frequency;
 
         // UI Inputs:
-        // - oscMid.type
-        // - oscHi.type
-        // - oscLo.type
-        // - detune.value
+        // - osc.mid.type
+        // - osc.hi.type
+        // - osc.lo.type
+        // - osc.detune.value
         // - portamento
         // - filter.type
         // - filterFrequency.value
@@ -30,10 +30,7 @@
         // - lfo.pitchAmount.value
         // - lfo.filterAmount.value
 
-        this.oscMid = osc.oscMid;
-        this.oscHi = osc.oscHi;
-        this.oscLo = osc.oscLo;
-        this.detune = osc.detune
+        this.osc = osc;
 
         this.filter = flt.filter;
         this.filterFrequency = flt.frequency;
@@ -45,10 +42,7 @@
         this.lfo = lfo;
 
         this._readOnly([
-            'oscMid',
-            'oscHi',
-            'oscLo',
-            'detune',
+            'osc',
             'filter',
             'filterFrequency',
             'filterQ',
@@ -58,9 +52,9 @@
     }
 
     function oscSection() {
-        var oscMid = new Tone.Oscillator().start();
-        var oscHi = new Tone.Oscillator().start();
-        var oscLo = new Tone.Oscillator().start();
+        var mid = new Tone.Oscillator().start();
+        var hi = new Tone.Oscillator().start();
+        var lo = new Tone.Oscillator().start();
 
         // Frequency control and pitch modulation affect all three oscillators
         var frequency = new Tone.Signal();
@@ -68,23 +62,23 @@
         var pitchModAmount = new Tone.Signal();
         frequency.connect(pitchMod.input[0]);
         pitchModAmount.connect(pitchMod.input[1]);
-        frequency.connect(oscMid.frequency);
-        pitchMod.connect(oscMid.frequency);
-        oscMid.frequency.fan(oscHi.frequency, oscLo.frequency);
+        frequency.connect(mid.frequency);
+        pitchMod.connect(mid.frequency);
+        mid.frequency.fan(hi.frequency, lo.frequency);
 
         // Detune control moves the hi and lo oscillators in opposite directions
-        var detune = oscHi.detune;
-        detune.chain(new Tone.Negate(), oscLo.detune);
+        var detune = hi.detune;
+        detune.chain(new Tone.Negate(), lo.detune);
 
         var output = new Tone.Signal();
-        oscMid.connect(output)
-        oscLo.connect(output);
-        oscHi.connect(output);
+        mid.connect(output)
+        lo.connect(output);
+        hi.connect(output);
 
         return {
-            oscMid: oscMid,
-            oscHi: oscHi,
-            oscLo: oscLo,
+            mid: mid,
+            hi: hi,
+            lo: lo,
             frequency: frequency,
             detune: detune,
             pitchModAmount: pitchModAmount,

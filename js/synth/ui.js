@@ -44,11 +44,11 @@ Synth.UI = function(synth) {
         ]
     });
     typeSelect.on('change', function(selection) {
-        synth.oscMid.type = selection.value;
-        synth.oscHi.type = selection.value;
-        synth.oscLo.type = selection.value;
+        synth.osc.mid.type = selection.value;
+        synth.osc.hi.type = selection.value;
+        synth.osc.lo.type = selection.value;
     });
-    DialControl('osc-detune', synth.detune, 'value', {
+    DialControl('osc-detune', synth.osc.detune, 'value', {
         max: 100
     });
     DialControl('osc-portamento', synth, 'portamento');
