@@ -5,8 +5,8 @@
         Tone.Monophonic.call(this, {});
 
         // UI Inputs:
-        // - osc.type(newType)
-        // - osc.detune.value
+        // - oscillator.type(newType)
+        // - oscillator.detune.value
         // - portamento
         // - filter.type(newType)
         // - filter.frequency.value
@@ -20,25 +20,25 @@
         // - lfo.pitchAmount.value
         // - lfo.filterAmount.value
 
-        this.osc = oscSection();
-        this.filter = filterSection(this.osc.output);
+        this.oscillator = oscillatorSection();
+        this.filter = filterSection(this.oscillator.output);
         this.amplifier = amplifierSection(this.filter.output);
         this.output = this.amplifier.output;
 
-        this.lfo = lfoSection(this.osc.pitchModAmount, this.filter.frequency);
+        this.lfo = lfoSection(this.oscillator.pitchModAmount, this.filter.frequency);
 
         // Member required by the Monophonic superclass for pitch control
-        this.frequency = this.osc.frequency;
+        this.frequency = this.oscillator.frequency;
 
         this._readOnly([
-            'osc',
+            'oscillator',
             'filter',
             'amplifier',
             'lfo'
             ]);
     }
 
-    function oscSection() {
+    function oscillatorSection() {
         var mid = new Tone.Oscillator().start();
         var hi = new Tone.Oscillator().start();
         var lo = new Tone.Oscillator().start();
@@ -111,20 +111,20 @@
     }
 
     function lfoSection(pitchMod, filterMod) {
-        var osc = new Tone.LFO().start();
+        var oscillator = new Tone.LFO().start();
         var rate = new Tone.Signal();
-        rate.chain(new Tone.ScaleExp(0.1, 10), osc.frequency);
+        rate.chain(new Tone.ScaleExp(0.1, 10), oscillator.frequency);
 
         // LFO Routing
         var pitchAmount = new Tone.Multiply(0);
         var filterAmount = new Tone.Multiply(0);
-        osc.fan(pitchAmount, filterAmount);
+        oscillator.fan(pitchAmount, filterAmount);
 
         pitchAmount.connect(pitchMod);
         filterAmount.connect(filterMod);
 
         return {
-            type: function(newType) { osc.type = newType; },
+            type: function(newType) { oscillator.type = newType; },
             rate: rate,
             pitchAmount: pitchAmount,
             filterAmount: filterAmount

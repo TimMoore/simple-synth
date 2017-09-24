@@ -34,7 +34,7 @@ Synth.UI = function(synth) {
         signal[property] = initialValue;
     }
 
-    // Osc controls
+    // oscillator controls
     var typeSelect = new Nexus.Select('#osc-type-select', {
         options: [
         'sine',
@@ -44,9 +44,9 @@ Synth.UI = function(synth) {
         ]
     });
     typeSelect.on('change', function(selection) {
-        synth.osc.type(selection.value);
+        synth.oscillator.type(selection.value);
     });
-    DialControl('osc-detune', synth.osc.detune, 'value', {
+    DialControl('osc-detune', synth.oscillator.detune, 'value', {
         max: 100
     });
     DialControl('osc-portamento', synth, 'portamento');
