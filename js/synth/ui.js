@@ -1,6 +1,15 @@
 Synth.UI = function(synth) {
     "use strict";
 
+    Nexus.colors = {
+        accent: "#FA6900",
+        fill: "#E0E4CC",
+        light: "#fff",
+        dark: "#333",
+        mediumLight: "#ccc",
+        mediumDark: "#666"
+    };
+
     function TypeSelect(id, property, options) {
         var typeSelect = new Nexus.Select('#' + id + '-select', {
             options: options
