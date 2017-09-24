@@ -25,10 +25,10 @@
         // - envelope.decay
         // - envelope.sustain
         // - envelope.release
-        // - lfo.type
-        // - lfoRate.value
-        // - lfoPitch.value
-        // - lfoFilter.value
+        // - lfo.osc.type
+        // - lfo.rate.value
+        // - lfo.pitchAmount.value
+        // - lfo.filterAmount.value
 
         this.oscMid = osc.oscMid;
         this.oscHi = osc.oscHi;
