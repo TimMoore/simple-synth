@@ -1,5 +1,7 @@
 body {
     font-family: "Futura";
+    margin: auto;
+    text-align: center;
 }
 
 .synth h1, .synth h2 {
@@ -14,25 +16,15 @@ body {
 }
 
 .synth section {
-    vertical-align: top;
 }
 
-.synth section, .synth .dial, .synth .slider {
+.row {
+    margin: 8px;
+    min-height: 30px;
+}
+
+.column, .synth .control {
     display: inline-block;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
-}
-
-.synth .control {
-    border-bottom: 1px solid;
-    padding: 1em;
-}
-
-.synth .vcontrol {
-    display: inline-block;
-}
-
-#keyboard {
-    margin: 1em;
+    vertical-align: top;
 }
