@@ -16,9 +16,9 @@
         // - osc.type(newType)
         // - osc.detune.value
         // - portamento
-        // - filter.type
-        // - filterFrequency.value
-        // - filterQ.value
+        // - filter.type(newType)
+        // - filter.frequency.value
+        // - filter.Q.value
         // - envelope.attack
         // - envelope.decay
         // - envelope.sustain
@@ -30,9 +30,7 @@
 
         this.osc = osc;
 
-        this.filter = flt.filter;
-        this.filterFrequency = flt.frequency;
-        this.filterQ = flt.Q;
+        this.filter = flt;
 
         this.envelope = env.envelope;
         this.output = env.output;
@@ -42,8 +40,6 @@
         this._readOnly([
             'osc',
             'filter',
-            'filterFrequency',
-            'filterQ',
             'envelope',
             'lfo'
             ]);
@@ -99,11 +95,11 @@
 
         // Q value "is a dimensionless value with a default value of 1 and a nominal range of 0.0001 to 1000"
         // https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/Q
-        // Scaling this to 0-50 keeps it in a range that sounds better.
-        Q.chain(new Tone.Multiply(50), filter.Q);
+        // Scaling this to 0.001-50 keeps it in a range that sounds better.
+        Q.chain(new Tone.ScaleExp(0.001, 50), filter.Q);
 
         return {
-            filter: filter,
+            type: function(newType) { filter.type = newType; },
             frequency: frequency,
             Q: Q,
             output: filter.output

@@ -61,12 +61,12 @@ Synth.UI = function(synth) {
         ]
     });
     filterTypeSelect.on('change', function(selection) {
-        synth.filter.type = selection.value;
+        synth.filter.type(selection.value);
     });
-    DialControl('filter-freq', synth.filterFrequency, 'value', {
+    DialControl('filter-freq', synth.filter.frequency, 'value', {
         value: 0.5
     });
-    DialControl('filter-res', synth.filterQ);
+    DialControl('filter-q', synth.filter.Q);
 
     SliderControl('envelope-a', synth.envelope, 'attack', {
         min: 0.01
